@@ -1,0 +1,44 @@
+// https://leetcode.com/problems/partition-equal-subset-sum/
+public class Solution {
+    public boolean canPartition(int[] nums) {
+        Arrays.sort(nums);
+        int sum = 0;
+        for(int i=0; i<nums.length; ++i)
+            sum += nums[i];
+        if(sum % 2 == 1 || nums.length == 1)    return false;
+        sum = sum /2;
+        Stack<Integer> st = new Stack<>();
+        int cursor = nums.length - 1;
+        st.push(cursor);
+        sum -= nums[cursor--];
+        while(!st.isEmpty()) {
+            while(sum > 0 && cursor >= 0) {
+                if(nums[cursor] <= sum) {
+                    st.push(cursor);
+                    sum -= nums[cursor];
+                } 
+                cursor --;
+            }
+            if(sum == 0)    return true;
+            cursor = st.pop();
+            sum += nums[cursor];
+            int last = nums[cursor];
+            if(cursor > 0) {
+                while(cursor>=0 && nums[cursor] == last)
+                    cursor --;
+            }
+            else {
+                int expect = 1;
+                while((cursor= st.pop()) == expect) {
+                    sum += nums[cursor];
+                    expect ++;
+                }
+                sum+= nums[cursor];
+                last = nums[cursor];
+                while(cursor>=0 && nums[cursor] == last)
+                    cursor --;
+            }
+        }
+        return false;
+    }
+}
